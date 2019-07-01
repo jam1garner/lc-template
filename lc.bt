@@ -1,0 +1,96 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+struct HEADER {
+    char magic[4]<bgcolor=cBlue>;
+    byte version<bgcolor=cRed>;
+    byte format_version<bgcolor=cBlue>;
+    byte unk[0x6]<bgcolor=cBlue>;
+    byte size_int<bgcolor=cRed>;
+    byte size_size_t<bgcolor=cBlue>;
+    byte size_instr<bgcolor=cRed>;
+    byte size_luanum<bgcolor=cBlue>;
+    byte size_float<bgcolor=cRed>;
+    uint64 LUAC_INT<bgcolor=cBlue>; // 0x5678 ???
+    float LUAC_NUM; // 370.5 ???
+} header;
+
+struct LuaString {
+    byte len;
+    char str[len];
+};
+
+struct LuaValue {
+    byte id;
+    switch(id){
+        case 0x0:
+            break;
+        case 0x1:
+            byte bool_var;
+            break;
+        case 0x3:
+            float float_var;
+            break;
+        case 0x4:
+            byte size;
+            char str[size-1];
+            break;
+        case 0x13:
+            uint64 val64;
+            break;
+        default:
+            local int i = 5 / 0;
+            break;
+    }
+};
+
+struct UPVALUE {
+    byte in_stack<bgcolor=cLtBlue>;
+    byte id<bgcolor=cLtRed>;
+};
+
+struct LOCALVAR {
+    byte name_len;
+    char name[name_len];
+    uint start;
+    uint end;
+};
+
+struct FUNC;
+
+struct FUNC {
+    byte src_name_len<bgcolor=cWhite>;
+    char src_name[src_name_len]<bgcolor=cWhite, optimize=false>;
+    uint first_line<bgcolor=cBlack>;
+    uint last_line<bgcolor=cBlack>;
+    byte param_count<bgcolor=cRed>;
+    byte is_vararg<bgcolor=cBlue>;
+    byte max_stack_size<bgcolor=cRed>;
+    uint code_size<bgcolor=cBlue>;
+    uint code[code_size]<bgcolor=cGreen>;
+    uint const_count<bgcolor=cRed>;
+    LuaValue consts[const_count]<optimize=false, bgcolor=cYellow>;
+    uint upvalue_count<bgcolor=cBlue>;
+    UPVALUE upvals[upvalue_count];
+    uint func_count<bgcolor=cPurple>;
+    FUNC funcs[func_count]<optimize=false>;
+    uint line_info_count<bgcolor=cBlack>;
+    uint line_info[line_info_count];
+    uint local_var_count<bgcolor=cBlack>;
+    LOCALVAR local_var_debug_info[local_var_count]<optimize=false>;
+    uint upvalue_name_count<bgcolor=cBlack>;
+    LuaString upvalue_names[upvalue_name_count]<optimize=false>;
+};
+
+FUNC func<optimize=false>;
